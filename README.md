@@ -174,7 +174,7 @@ Caso necessite alterar alguma configuração de um Pod existente, você pode uti
 kubectl edit pod nome-do-pod
 ```
 
-## ⚠️ Atenção: A edição direta de Pods em execução via kubectl edit é uma prática imperativa e geralmente desencorajada em ambientes de produção, pois as alterações não são persistidas e podem ser perdidas em caso de falhas ou recriações.
+ **⚠️ Atenção: A edição direta de Pods em execução via kubectl edit é uma prática imperativa e geralmente desencorajada em ambientes de produção, pois as alterações não são persistidas e podem ser perdidas em caso de falhas ou recriações**.
 
 ## 🚧 A Desvantagem da Abordagem Imperativa
 Embora a criação imperativa de Pods seja rápida e útil para testes e aprendizado, ela apresenta algumas limitações importantes:
