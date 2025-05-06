@@ -179,9 +179,9 @@ kubectl edit pod nome-do-pod
 ## 🚧 A Desvantagem da Abordagem Imperativa
 Embora a criação imperativa de Pods seja rápida e útil para testes e aprendizado, ela apresenta algumas limitações importantes:
 
-### Falta de Rastreabilidade: Não há um histórico claro das configurações aplicadas ao cluster.
-### Estado Não Declarativo: Não há uma definição explícita do estado desejado do cluster, dificultando a reprodução e o gerenciamento.
-### Dificuldade de Auditoria: Acompanhar as mudanças e o estado atual do cluster se torna mais complexo.
+- **Falta de Rastreabilidade:** Não há um histórico claro das configurações aplicadas ao cluster.
+- **Estado Não Declarativo:** Não há uma definição explícita do estado desejado do cluster, dificultando a reprodução e o gerenciamento.
+- **Dificuldade de Auditoria:** Acompanhar as mudanças e o estado atual do cluster se torna mais complexo.
 
 ## ✨ Rumo à Organização: A Abordagem Declarativa
 Para superar essas limitações e manter seu ambiente Kubernetes mais organizado, versionado e gerenciável, a abordagem declarativa é a prática recomendada. Com ela, você define o estado desejado dos seus recursos em arquivos de configuração (YAML ou JSON), permitindo um controle mais robusto e consistente do seu cluster. 📂
