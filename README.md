@@ -185,3 +185,66 @@ Embora a criação imperativa de Pods seja rápida e útil para testes e aprendi
 
 ## ✨ Rumo à Organização: A Abordagem Declarativa
 Para superar essas limitações e manter seu ambiente Kubernetes mais organizado, versionado e gerenciável, a abordagem declarativa é a prática recomendada. Com ela, você define o estado desejado dos seus recursos em arquivos de configuração (YAML ou JSON), permitindo um controle mais robusto e consistente do seu cluster. 📂
+
+
+# 📝 Criando Pods de Forma Declarativa no Kubernetes
+
+## 📄 Definição de Recursos: JSON ou YAML?
+
+Ao trabalhar com a abordagem declarativa no Kubernetes, as configurações dos seus recursos, como os Pods, são definidas em arquivos. Esses arquivos podem ser formatados em **JSON** (`.json`) ou **YAML** (`.yaml`). Embora ambos sejam válidos, o formato **YAML** é geralmente preferido por sua sintaxe mais limpa e legível para humanos. 👍
+
+## 🧱 Estrutura Básica de um Arquivo de Definição de Pod (YAML)
+
+Um arquivo de definição de Pod em YAML tipicamente contém as seguintes seções principais:
+
+```yaml
+apiVersion: # Versão da API do Kubernetes
+kind:       # Tipo do recurso a ser criado
+metadata:   # Metadados do recurso
+spec:       # Especificações do recurso
+```
+
+Vamos detalhar cada uma dessas seções:
+
+## apiVersion: A Versão da API 🏷️
+
+Este campo especifica a versão da API do Kubernetes que você está utilizando para criar o recurso. Ao utilizar o prefixo "v", como em v1, indica que você está trabalhando com uma versão estável da API.
+
+```yaml
+apiVersion: v1
+```
+
+## kind: O Tipo de Recurso 📌
+Aqui, você define o tipo de recurso que deseja criar. No nosso caso, para criar um Pod, o valor deste campo será Pod.
+
+```yaml
+kind: Pod
+```
+
+## metadata: Informações Adicionais ℹ️
+Esta seção contém metadados sobre o Pod, como o seu nome (name), que é um identificador único dentro do namespace.
+
+```yaml
+metadata:
+  name: meu-primeiro-pod
+```
+
+## spec: As Especificações do Pod ⚙️
+A seção spec define as especificações desejadas para o Pod. Um dos campos mais importantes dentro de spec é containers, que é uma lista de definições de containers que serão executados dentro do Pod. Cada container requer um name (nome do container) e uma image (a imagem Docker a ser utilizada).
+
+```yaml
+spec:
+  containers:
+  - name: meu-container
+    image: nginx:latest
+```
+
+## 🚀 Aplicando o Arquivo de Definição com kubectl apply
+Para que o Kubernetes crie o Pod com base no seu arquivo de definição, você utiliza o comando kubectl apply seguido da flag -f (para "file") e o nome do seu arquivo (por exemplo, primeiro-pod.yaml).
+
+```yaml
+kubectl apply -f primeiro-pod.yaml
+```
+
+## ✨ Foco na Declaração, Poder na API
+Ao adotar a abordagem declarativa, nosso foco se desloca para a entrega de um arquivo de definição claro e conciso para o Kubernetes. A API do Kubernetes então assume a responsabilidade de interpretar essa definição e provisionar os Pods conforme especificado. Isso simplifica o gerenciamento e promove a consistência do seu ambiente. 🎯
