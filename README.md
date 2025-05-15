@@ -248,3 +248,60 @@ kubectl apply -f primeiro-pod.yaml
 
 ## ✨ Foco na Declaração, Poder na API
 Ao adotar a abordagem declarativa, nosso foco se desloca para a entrega de um arquivo de definição claro e conciso para o Kubernetes. A API do Kubernetes então assume a responsabilidade de interpretar essa definição e provisionar os Pods conforme especificado. Isso simplifica o gerenciamento e promove a consistência do seu ambiente. 🎯
+
+
+# 🚀 Iniciando o Projeto
+
+## 🧹 Limpeza Inicial
+
+Antes de tudo, vamos dar uma faxina e remover quaisquer pods rodando por aí.
+
+```bash
+# Para deletar um pod criado na correria (imperativo):
+kubectl delete pod nome-do-pod
+
+# Para deletar pods definidos em um arquivo (declarativo):
+kubectl delete -f ./nome-do-arquivo-onde-estao-declarados-os-pods.yaml
+```
+
+# 📰 Nosso Cenário: Portal de Notícias
+
+Vamos botar a mão na massa com um portal de notícias!
+
+## ✍️ Criando o arquivo portal-noticias.yaml:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: portal-noticias
+spec:
+    containers:
+        - name: portal-noticias-container
+          image: aluracursos/portal-noticias:1
+```
+
+## ⚙️ Aplicando a configuração:
+```bash
+kubectl apply -f ./portal-noticias.yaml
+```
+
+## 🌐 Acessando no Navegador
+Para dar uma espiada no nosso portal, precisamos do IP do pod:
+```bash
+kubectl describe pod portal-noticias
+```
+
+Abra seu navegador e digite o IP obtido, seguido da porta 8080 (ex: http://<IP>:8080).
+
+# 🕵️‍♀️ Investigando Problemas
+
+Ops! Parece que o site não está abrindo como esperado. Vamos investigar mais a fundo! Podemos entrar na linha de comando do pod assim:
+
+```bash
+kubectl exec -it portal-noticias -- bash
+```
+
+```bash
+curl localhost
+```
