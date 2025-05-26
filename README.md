@@ -317,3 +317,119 @@ curl localhost
 ## 💡 Próximo Passo: Expor o Container
 
 Para que o nosso portal seja acessível externamente, precisaremos "expor" o container.
+
+
+
+## 🚀 Comunicação entre Pods com Services no Kubernetes
+A comunicação entre pods em um cluster Kubernetes é um conceito fundamental para o funcionamento de aplicações distribuídas. Embora seja possível a comunicação direta via IP, a natureza efêmera dos pods (seus IPs podem mudar em caso de reinício) torna essa abordagem inviável para um sistema robusto. É aí que entram os Services (ou SVCs).
+
+
+## 🌐 O que são Services?
+Services são abstrações que expõem aplicações rodando em um ou mais pods, provendo IPs fixos e DNS para esses pods. Isso significa que, em vez de um pod se comunicar diretamente com o IP de outro pod, ele se comunica com o DNS do Service. Além de estabilidade, os Services também podem atuar como balanceadores de carga, distribuindo as requisições entre os pods associados.
+
+Em resumo, a comunicação ideal é feita através do DNS do Service, e não diretamente pelo IP do pod.
+
+## 🚦 Tipos de Services
+Existem três tipos principais de Services:
+
+ClusterIP: 🏡 Para comunicação interna entre pods dentro do mesmo cluster.
+NodePort: 🚪 Expõe um Service na porta de cada Node do cluster, permitindo acesso externo.
+LoadBalancer: ⚖️ Cria um LoadBalancer externo (se o ambiente de cloud suportar) para expor o Service.
+
+## 🏘️ ClusterIP
+O ClusterIP é ideal para comunicação interna entre diferentes pods dentro do mesmo cluster. Um pod com um Service do tipo ClusterIP pode ser acessado por outros pods dentro do cluster. No entanto, é importante notar que um pod só pode ser acessado por outros se houver um Service que o exponha; o inverso não é verdadeiro (um pod sem Service não pode ser acessado diretamente por outros pods a partir de fora do cluster). O ClusterIP não permite acesso externo ao cluster.
+
+## Exemplo de ClusterIP
+Para demonstrar o ClusterIP, vamos criar dois pods e um Service:
+
+Pod 1:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-1
+spec:
+  containers:
+    - name: container-pod-1
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+```
+
+
+Pod 2
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-2
+spec:
+  containers:
+    - name: container-pod-2
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+```
+
+Para vincular o svc-pod-2 ao pod-2, adicionamos a label app: segundo-pod ao yaml do pod-2.
+
+Service do Pod 2:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicec-pod-2
+spec:
+  type: ClusterIP
+  selector:
+    app: segundo-pod
+```
+
+
+A seção ports define a porta do Service (port: 80) e para qual porta do pod ele irá direcionar as requisições (se não especificado targetPort, assume a mesma porta do port).
+
+## 🧪 Testando a Comunicação
+Obter o IP do Service:
+
+```bash
+kubectl get svc
+```
+
+Acessar o Pod 1:
+```bash
+kubectl exec -it pod-1 -- bash
+```
+
+Acessar o Service pelo IP:
+```bash
+curl {ip-do-service}:8080
+```
+
+Você também pode acessar o Service pelo seu DNS (o nome do Service é o DNS dentro do cluster).
+
+## 🎯 Redirecionamento de Portas
+Se a porta exposta pelo Service for diferente da porta de acesso do pod vinculado, você pode definir a porta alvo com targetPort:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicec-pod-2
+spec:
+  type: ClusterIP
+  selector:
+    app: segundo-pod
+  ports:
+   - port: 80
+     targetPort: 9000
+```
+
+
+Nesse caso, o comando curl seria:
+
+```bash
+curl {ip-do-service}:9000
+```
