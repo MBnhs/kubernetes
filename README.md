@@ -433,3 +433,84 @@ Nesse caso, o comando curl seria:
 ```bash
 curl {ip-do-service}:9000
 ```
+
+
+## 🌐 Node Port 
+Node Ports são serviços que abrem as portas do seu Node Cluster para o mundo exterior! 🚀
+
+Eles permitem que você envie requisições de máquinas fora do cluster para dentro dele. Já imaginou acessar sua aplicação rodando no Kubernetes direto pelo navegador? Com Node Port, isso é totalmente possível! 💻
+
+Além disso, dentro do cluster, ele funciona como um Cluster IP (o que significa que um pod pode se comunicar com outro pod). A diferença é que o Node Port também permite o acesso externo por outras aplicações. 🔄
+
+
+# Arquivo svc-pod-1.yaml ⚙️
+Para criar o serviço Node Port que vai expor o nosso pod-1, vamos definir o seguinte arquivo svc-pod-1.yaml:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-pod-1
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      nodePort: 30000
+  selector:
+    app: primeiro-pod
+
+```
+
+
+# Conectando o Serviço ao Pod 🤝
+Para que o serviço Node Port consiga direcionar o tráfego para o seu pod, precisamos garantir que eles estejam "conectados". Isso é feito através do selector no arquivo de serviço e da label no arquivo do pod. Ambos devem ter o mesmo valor.
+
+Aqui está como definimos a label "primeiro-pod" no arquivo pod-1.yaml:
+
+```yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-1
+  labels:
+    app: primeiro-pod
+spec:
+  containers:
+    - name: container-pod-1
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+```
+
+# ✨Aplicando as Configurações no Kubernetes 
+Com ambos os arquivos (svc-pod-1.yaml e pod-1.yaml) prontos, você pode aplicá-los no seu cluster Kubernetes usando os comandos kubectl apply:
+
+```bash
+kubectl apply -f ./svc-pod-1.yaml
+```
+
+```bash
+kubectl apply -f ./pod-1.yaml
+```
+
+
+# Acessando o Pod Externamente 🌎
+Para se conectar ao seu pod de fora do cluster, você precisa do endereço IP de um dos seus nós (nodes). Você pode obter esse IP com o seguinte comando:
+
+```bash
+kubectl get nodes -o wide
+```
+
+
+Procure pelo IP na coluna "INTERNAL-IP". 🕵️‍♀️
+
+Conforme definimos no arquivo svc-pod-1.yaml pela propriedade nodePort, a porta para acesso externo é a 30000.
+
+Portanto, para acessar sua aplicação, basta abrir o navegador ou usar uma ferramenta de requisição e digitar o seguinte:
+
+# <IP_DA_COLUNA_INTERNAL-IP>:30000
+
+# Por exemplo: 192.168.1.100:30000
+
+E pronto! 🎉 Você estará acessando seu pod-1 externamente através do serviço Node Port!
