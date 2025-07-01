@@ -611,7 +611,7 @@ kubectl get nodes -o wide
 
 Procure pela coluna INTERNAL-IP. Com esse IP em mãos, acesse seu portal de notícias no navegador:
 
-http://<internal-ip-do-minikube>:30000
+http://internal-ip-do-minikube:30000
 
 
 Se tudo estiver correto, você verá seu Portal de Notícias online! 🎉
