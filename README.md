@@ -539,3 +539,79 @@ spec:
 ```
 
 Ao aplicar este arquivo, o Kubernetes provisionará um Load Balancer externo no seu provedor de nuvem (como GCP, AWS, Azure, etc.) e o configurará para rotear o tráfego para o seu pod. Você obterá um IP externo que poderá ser usado para acessar sua aplicação! 🚀
+
+
+## Expondo o Portal de Notícias com NodePort 🚀
+Nesta aula, vamos configurar nosso Portal de Notícias para ser acessível de fora do cluster utilizando um NodePort. Prepare-se para ver seu site online! 🌐
+
+## 🧹 Organizando o Ambiente
+Antes de tudo, vamos dar uma limpada no nosso projeto para começar do zero. Iremos remover todos os pods e serviços existentes:
+
+```bash
+kubectl delete pods --all
+
+kubectl delete svc --all
+```
+
+Também é uma boa ideia remover os arquivos .yaml antigos, deixando apenas o arquivo portal-noticias.yaml para começarmos do zero.
+
+## 📝 Definindo o Pod do Portal de Notícias
+Para que nosso serviço possa se conectar ao pod, precisamos definir uma label e a containerPort dentro do arquivo portal-noticias.yaml, como vimos anteriormente:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: portal-noticias
+    labels:
+        app: portal-noticias # 🏷️ Nossa label para o serviço!
+spec:
+    containers:
+        - name: portal-noticias-container
+          image: aluracursos/portal-noticias:1
+          ports:
+            - containerPort: 80 # 🚪 A porta que o container está escutando
+```
+
+## 🚢 Criando o Serviço NodePort
+Agora, vamos criar o arquivo svc-portal-noticias.yaml para definir nosso serviço:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-portal-noticias
+spec:
+  type: NodePort # 🚀 Escolhemos NodePort para acesso externo
+  ports:
+    - port: 80 # 📡 Porta do serviço no cluster
+    # targetPort:80 # Opcional: targetPort padrão é a mesma que port
+      nodePort: 30000 # 🌐 A porta que usaremos para acessar de fora do cluster
+  selector:
+    app: portal-noticias # ✅ Seleciona os pods com essa label
+
+```
+
+Configuramos o tipo como NodePort porque nosso objetivo é acessar o portal de notícias externamente ao cluster. A porta nodePort que escolhemos (30000) apontará para a porta 80 do pod, e o selector garante que este serviço se conecte aos pods que possuem a label app: portal-noticias.
+
+## 🚀 Executando os Comandos
+Com os arquivos prontos, é hora de aplicar as configurações:
+
+```yaml
+kubectl apply -f ./portal-noticias.yaml
+kubectl apply -f ./svc-portal-noticias.yaml
+```
+
+## 🌍 Acessando o Portal de Notícias
+Para acessar o portal via Linux, você precisará do IP interno do Minikube. Obtenha-o com o seguinte comando:
+
+```yaml
+kubectl get nodes -o wide
+```
+
+Procure pela coluna INTERNAL-IP. Com esse IP em mãos, acesse seu portal de notícias no navegador:
+
+http://<internal-ip-do-minikube>:30000
+
+
+Se tudo estiver correto, você verá seu Portal de Notícias online! 🎉
