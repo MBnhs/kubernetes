@@ -597,7 +597,7 @@ Configuramos o tipo como NodePort porque nosso objetivo é acessar o portal de n
 ## 🚀 Executando os Comandos
 Com os arquivos prontos, é hora de aplicar as configurações:
 
-```yaml
+```bash
 kubectl apply -f ./portal-noticias.yaml
 kubectl apply -f ./svc-portal-noticias.yaml
 ```
@@ -605,7 +605,7 @@ kubectl apply -f ./svc-portal-noticias.yaml
 ## 🌍 Acessando o Portal de Notícias
 Para acessar o portal via Linux, você precisará do IP interno do Minikube. Obtenha-o com o seguinte comando:
 
-```yaml
+```bash
 kubectl get nodes -o wide
 ```
 
