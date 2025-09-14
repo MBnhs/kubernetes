@@ -615,3 +615,59 @@ http://internal-ip-do-minikube:30000
 
 
 Se tudo estiver correto, você verá seu Portal de Notícias online! 🎉
+
+
+# 📰 Sistema de Notícias no Kubernetes
+Agora iremos realizar a implantação de um sistema de notícias no Kubernetes, incluindo um Pod e um Service. Ele será utilizado como o sistema de cadastro das notícias no nosso portal de notícias.
+
+## 📝 Configurando o Pod
+Primeiramente, criaremos o Pod que executará a aplicação do sistema de notícias. O arquivo de configuração sistema-noticias.yaml é o seguinte:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sistema-noticias
+  labels:
+    app: sistema-noticias
+spec:
+  containers:
+    - name: sistema-noticias-container
+      image: aluracursos/sistema-noticias:1
+      ports:
+        - containerPort: 80
+```
+
+
+## 🌐 Expondo a Aplicação com um Service
+Para que a aplicação seja acessível, precisamos criar um Service. Este arquivo svc-sistema-noticias.yaml expõe o Pod na porta 30001 do nó:
+
+```yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-sistema-noticias
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      nodePort: 30001
+  selector:
+    app: sistema-noticias
+```
+
+
+## 🚀 Executando os Arquivos de Configuração
+Para aplicar as configurações, execute os seguintes comandos no terminal:
+
+```bash
+
+kubectl apply -f ./sistema-noticias.yaml
+kubectl apply -f ./svc-sistema-noticias.yaml
+```
+
+## ⚠️ Acessando a Aplicação
+Após a execução, você pode acessar a aplicação. No entanto, ao visitar http://internal-ip-do-minikube:30001, você verá uma mensagem de erro. Isso é esperado, pois o banco de dados ainda não foi configurado!
+
+O próximo passo é configurar o banco de dados. 🛠️ Fique ligado!
