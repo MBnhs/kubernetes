@@ -671,3 +671,61 @@ kubectl apply -f ./svc-sistema-noticias.yaml
 Após a execução, você pode acessar a aplicação. No entanto, ao visitar http://internal-ip-do-minikube:30001, você verá uma mensagem de erro. Isso é esperado, pois o banco de dados ainda não foi configurado!
 
 O próximo passo é configurar o banco de dados. 🛠️ Fique ligado!
+
+
+## 📝 Configuração do Banco de Dados para o Sistema de Notícias
+Agora vamos criar o banco de dados que se conectará com nosso sistema. Para isso, usaremos um Pod e um Service no Kubernetes.
+
+Criaremos um ClusterIP para o banco de dados, pois o acesso será apenas interno, dentro do cluster.
+
+## 🗂️ Arquivos de Configuração
+## 1️⃣ Pod do Banco de Dados (db-noticias.yaml)
+
+```yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: db-noticias
+  labels:
+    app: db-noticias
+spec:
+  containers:
+    - name: db-noticias-container
+      image: aluracursos/mysql-db:1
+      ports:
+        - containerPort: 3306
+
+```
+
+## 2️⃣ Service do Banco de Dados (svc-db-noticias.yaml)
+
+```yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-db-noticias
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+  selector:
+    app: db-noticias
+
+```
+
+## 🚀 Aplicando as Mudanças
+Para aplicar as configurações no cluster, execute os seguintes comandos:
+
+```bash
+
+kubectl apply -f ./db-noticias.yaml
+kubectl apply -f ./svc-db-noticias.yaml
+
+```
+
+## ⚠️ Próximo Passo: Solução de Erro
+Ao executar kubectl get pods, você notará um erro no pod do banco de dados. Isso acontece porque as variáveis de ambiente do banco de dados não foram definidas.
+
+Vamos resolver isso na próxima etapa!
